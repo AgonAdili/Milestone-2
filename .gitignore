@@ -1,0 +1,26 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Dataset and generated data (too large for git; reviewer provides their own copy)
+data/raw/
+data/processed/
+data/aggregated/
+# Keep the placeholder so git tracks the directory
+!data/.gitkeep
+
+# Generated output (HTML map)
+output/hotspot_map.html
+!output/.gitkeep
+
+# PySpark / Hadoop temp files
+derby.log
+metastore_db/
+spark-warehouse/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.DS_Store
