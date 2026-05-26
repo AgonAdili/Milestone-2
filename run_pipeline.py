@@ -9,7 +9,7 @@ from pathlib import Path
 
 from pipeline.config import (
     RAW_CSV, RAW_PARQUET, PROCESSED_PARQUET,
-    AGGREGATED_DIR, DATA_DIR, OUTPUT_DIR,
+    AGGREGATED_DIR, MAP_OUTPUT, DATA_DIR, OUTPUT_DIR,
 )
 
 
@@ -48,26 +48,34 @@ def main():
     spark.sparkContext.setLogLevel("WARN")
     sedona = SedonaContext.create(spark)
 
-    print("\n[1/3] Ingest: CSV → raw Parquet")
+    print("\n[1/4] Ingest: CSV → raw Parquet")
     t = time.time()
     from pipeline.ingest import run_ingest
     run_ingest(sedona, str(RAW_CSV), RAW_PARQUET)
     print(f"  Done in {time.time() - t:.1f} s")
 
-    print("\n[2/3] Store: raw Parquet → partitioned Parquet")
+    print("\n[2/4] Store: raw Parquet → partitioned Parquet")
     t = time.time()
     from pipeline.store import run_store
     run_store(sedona, RAW_PARQUET, PROCESSED_PARQUET)
     print(f"  Done in {time.time() - t:.1f} s")
 
-    print("\n[3/3] Process: Sedona spatial validation + aggregations")
+    print("\n[3/4] Process: Sedona spatial validation + aggregations")
     t = time.time()
     from pipeline.process import run_process
     run_process(sedona, PROCESSED_PARQUET, AGGREGATED_DIR)
     print(f"  Done in {time.time() - t:.1f} s")
 
     sedona.stop()
+
+    print("\n[4/4] Expose: generate interactive map")
+    t = time.time()
+    from pipeline.expose import run_expose
+    run_expose(AGGREGATED_DIR, MAP_OUTPUT)
+    print(f"  Done in {time.time() - t:.1f} s")
+
     print("\nPipeline complete.")
+    print(f"Open the map: open \"{MAP_OUTPUT}\"")
 
 
 if __name__ == "__main__":
