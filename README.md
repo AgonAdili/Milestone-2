@@ -5,44 +5,83 @@
 **Dataset:** NYPD Arrest Data (Year to Date) — 278,953 records, 19 columns, 61 MB  
 **Source:** https://data.cityofnewyork.us/Public-Safety/NYPD-Arrest-Data-Year-to-Date-/uip8-fykc/about_data
 
+The dataset is included in the repository — no separate download needed.
+
 ---
 
-## How to run
+## Prerequisites — Java 17
 
-### Prerequisites
+PySpark and Sedona require Java 17. Install it once, before anything else.
 
-**Java 17** (required by PySpark and Sedona):
+**macOS**
 ```bash
 brew install openjdk@17
 export JAVA_HOME=/opt/homebrew/opt/openjdk@17
 export PATH="$JAVA_HOME/bin:$PATH"
 ```
+To make it permanent: add both `export` lines to `~/.zshrc`.
 
-### Setup
+**Windows**
+1. Download and install Java 17 from https://adoptium.net (choose *Temurin 17*, JDK, Windows x64)
+2. During install, enable the option **"Set JAVA_HOME variable"** — this sets it automatically
+3. Verify in a new terminal:
+```
+java -version
+```
 
+---
+
+## Setup
+
+**macOS / Linux**
 ```bash
 git clone <repository-url>
 cd <repository-folder>
-
 python3 -m venv env
 source env/bin/activate
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
-The dataset (`data/NYPD_Arrest_Data_(Year_to_Date)_20260410.csv`) is included in the repository — no separate download needed.
+**Windows** (Command Prompt or PowerShell)
+```
+git clone <repository-url>
+cd <repository-folder>
+python -m venv env
+env\Scripts\activate
+pip install --upgrade pip setuptools wheel
+pip install -r requirements.txt
+```
 
-### Run
+---
 
+## Run
+
+**macOS / Linux**
 ```bash
 python3 run_pipeline.py
 ```
 
-### View output
+**Windows**
+```
+python run_pipeline.py
+```
 
+---
+
+## View output
+
+**macOS**
 ```bash
 open output/hotspot_map.html
 ```
+
+**Windows**
+```
+start output\hotspot_map.html
+```
+
+Or open `output/hotspot_map.html` directly in any browser.
 
 ---
 
@@ -61,8 +100,9 @@ open output/hotspot_map.html
 
 | Error | Fix |
 |---|---|
-| `Unable to locate a Java Runtime` | Run `brew install openjdk@17` and set `JAVA_HOME` as above |
-| `ModuleNotFoundError: No module named 'sedona'` | Activate the venv: `source env/bin/activate` |
-| `FileNotFoundError` on the CSV | Check the file is in `data/` with the exact filename |
+| `Unable to locate a Java Runtime` | Java 17 is not installed or JAVA_HOME is not set — follow the prerequisites above |
+| `UnsupportedClassVersionError` | Wrong Java version is active — verify `java -version` shows 17, then set JAVA_HOME |
+| `ModuleNotFoundError: No module named 'sedona'` | Virtual environment is not activated — run `source env/bin/activate` (Mac) or `env\Scripts\activate` (Windows) |
+| `FileNotFoundError` on the CSV | The file must be at `data/NYPD_Arrest_Data_(Year_to_Date)_20260410.csv` |
 | `OutOfMemoryError` | Increase `spark.driver.memory` in `run_pipeline.py` (default 4g) |
-| Spark log noise | Normal — Spark prints to stderr, pipeline output goes to stdout |
+| Spark log noise | Normal — Spark prints INFO to stderr; pipeline output goes to stdout |
