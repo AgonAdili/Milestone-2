@@ -49,9 +49,13 @@ git clone <repository-url>
 cd <repository-folder>
 python -m venv env
 env\Scripts\activate
-pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt
+python.exe -m pip install --upgrade pip setuptools wheel
+python.exe -m pip install --only-binary :all: apache-sedona h3
+python.exe -m pip install -r requirements.txt
 ```
+
+> `apache-sedona` and `h3` require a C compiler if built from source on Windows.
+> The `--only-binary :all:` flag forces pip to use pre-built wheels and skips compilation entirely.
 
 ---
 
