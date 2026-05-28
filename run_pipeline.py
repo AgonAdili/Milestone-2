@@ -66,14 +66,13 @@ def main():
     run_process(sedona, PROCESSED_PARQUET, AGGREGATED_DIR)
     print(f"  Done in {time.time() - t:.1f} s")
 
-    sedona.stop()
-
     print("\n[4/4] Expose: generate interactive map")
     t = time.time()
     from pipeline.expose import run_expose
-    run_expose(AGGREGATED_DIR, MAP_OUTPUT)
+    run_expose(sedona, AGGREGATED_DIR, MAP_OUTPUT)
     print(f"  Done in {time.time() - t:.1f} s")
 
+    sedona.stop()
     print("\nPipeline complete.")
     print(f"Open the map: open \"{MAP_OUTPUT}\"")
 

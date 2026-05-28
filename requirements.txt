@@ -1,6 +1,6 @@
+setuptools>=68.0.0
 pyspark==3.5.3
 apache-sedona==1.6.1
-pyarrow==17.0.0
 folium==0.17.0
 h3==4.1.0
 pandas==2.2.3

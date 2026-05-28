@@ -26,14 +26,11 @@ cd <repository-folder>
 
 python3 -m venv env
 source env/bin/activate
+pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
-### Place the dataset
-
-```bash
-cp /path/to/NYPD_Arrest_Data_\(Year_to_Date\)_20260410.csv data/
-```
+The dataset (`data/NYPD_Arrest_Data_(Year_to_Date)_20260410.csv`) is included in the repository — no separate download needed.
 
 ### Run
 

@@ -1,8 +1,10 @@
 """
 Step 4 – Expose
-Reads the aggregated Parquet files produced by Step 3 (with pandas, since
-the data is now small enough) and writes a self-contained HTML map using
-Folium.  No server is required: a reviewer opens the file in any browser.
+Reads the aggregated Parquet files produced by Step 3 and writes a
+self-contained HTML map using Folium. No server is required.
+
+Parquet files are read via the active Spark session (.toPandas()) so that
+no external pyarrow installation is required on the host machine.
 
 Map layers:
   • HeatMap     – H3 cell centroids weighted by arrest count
@@ -12,9 +14,9 @@ Map layers:
 """
 
 from pathlib import Path
-import pandas as pd
 import folium
 from folium.plugins import HeatMap
+from pyspark.sql import SparkSession
 
 from pipeline.config import BOROUGH_NAMES
 
@@ -27,11 +29,11 @@ def _scale_radius(arrests: int, max_arrests: int) -> float:
     return 4 + (arrests / max_arrests) * 22  # 4 – 26 px
 
 
-def run_expose(aggregated_dir: str, output_path: str) -> None:
-    precinct_df = pd.read_parquet(f"{aggregated_dir}/precinct_summary.parquet")
-    h3_df       = pd.read_parquet(f"{aggregated_dir}/h3_density.parquet")
-    top10_df    = pd.read_parquet(f"{aggregated_dir}/top10_precincts.parquet")
-    monthly_df  = pd.read_parquet(f"{aggregated_dir}/monthly_trend.parquet")
+def run_expose(spark: SparkSession, aggregated_dir: str, output_path: str) -> None:
+    precinct_df = spark.read.parquet(f"{aggregated_dir}/precinct_summary.parquet").toPandas()
+    h3_df       = spark.read.parquet(f"{aggregated_dir}/h3_density.parquet").toPandas()
+    top10_df    = spark.read.parquet(f"{aggregated_dir}/top10_precincts.parquet").toPandas()
+    monthly_df  = spark.read.parquet(f"{aggregated_dir}/monthly_trend.parquet").toPandas()
 
     print(f"  Precincts to map: {len(precinct_df)}")
     print(f"  H3 cells to map:  {len(h3_df)}")
