@@ -46,7 +46,7 @@ def run_store(spark: SparkSession, raw_parquet: str, output_path: str) -> None:
     proc_mb = _dir_size_mb(output_path)
     ratio   = raw_mb / proc_mb if proc_mb > 0 else 0
     print(f"  Raw Parquet:       {raw_mb:.1f} MB")
-    print(f"  Processed Parquet: {proc_mb:.1f} MB  (ratio {ratio:.1f}×)")
+    print(f"  Processed Parquet: {proc_mb:.1f} MB  (ratio {ratio:.1f}x)")
     partitions = [p for p in os.listdir(output_path) if p.startswith("ARREST_BORO=")]
     print(f"  Partitions: {sorted(partitions)}")
     print(f"  Wrote processed Parquet: {output_path}")
